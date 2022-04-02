@@ -1,9 +1,12 @@
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
+import 'package:gw/screens/login_screen.dart';
 
-import 'main_screen.dart';
+import 'screens/main_screen.dart';
+//import 'profileSet.dart';
 
 const MaterialColor primaryGreen = MaterialColor(
   _greenPrimaryValue,
@@ -39,7 +42,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: primaryGreen,
         fontFamily: 'rouf-font',
       ),
-      home: MyPage(),
+      //home: MyPage(),
+      home: LoginSignupScreen(),
     );
   }
 }
@@ -99,10 +103,22 @@ class Authentication extends StatelessWidget {
             providerConfigs: [EmailProviderConfiguration()],
           );
         }
+        // // firestore에서 프로필 정보 가져오기. 없으면 설정하도록
+        // if (checkHasData()) {
+        //   return ProfileSet();
+        // }
         return MainScreen();
       },
     );
   }
+
+  // Future<bool> checkHasData() async {
+  //   final f = FirebaseFirestore.instance
+  //       .collection("PROFILE")
+  //       .doc("globals.currentUser?.uid");
+  //   var checking = await f.get(); //받아오는 방식이므로 await필요(아래거 실행늦게 하게 하려면)
+  //   return checking.exists;
+  // }
 }
 
 // class MyApp extends StatelessWidget {

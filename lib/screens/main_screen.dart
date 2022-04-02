@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
+
+import '../globals.dart' as globals;
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -10,19 +13,39 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  final _authentication = FirebaseAuth.instance;
+  User? loggedUser;
+
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser() {
+    try {
+      final user = _authentication.currentUser;
+      if (user != null) {
+        loggedUser = user;
+        print(loggedUser!.email);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      //backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(40.0), // AppBar 사이즈 지정
+        preferredSize: Size.fromHeight(50.0), // AppBar 사이즈 지정
         child: AppBar(
           backgroundColor: Colors.white, // AppBar 색상 지정
           //title: Text('Main Screen', style: TextStyle(color: Colors.black)),
           leading: Image.asset(
-            'assets/images/logo-black.png',
+            'assets/images/logo-black-2.png',
             //fit: BoxFit.contain,
-            //height: 40,
+            height: 50,
           ),
           iconTheme: IconThemeData(color: Color.fromARGB(255, 32, 32, 32)),
           elevation: 0.0,
@@ -97,7 +120,12 @@ class _MainScreenState extends State<MainScreen> {
                 color: Colors.grey[850],
               ),
               title: Text('친구'),
-              onTap: () {
+              onTap: () async {
+                final f = FirebaseFirestore.instance;
+                await f
+                    .collection('PROFILE')
+                    .doc(globals.currentUser?.uid)
+                    .set({'username': 'abcd'});
                 print("친구 is clicked");
               },
               trailing: Icon(Icons.add),
@@ -121,6 +149,9 @@ class _MainScreenState extends State<MainScreen> {
               title: Text('로그아웃'),
               onTap: () {
                 FirebaseAuth.instance.signOut();
+                //_authentication.signOut();
+                Navigator.pop(context);
+                Navigator.pop(context);
                 print("Logout is clicked");
               },
               trailing: Icon(Icons.add),
