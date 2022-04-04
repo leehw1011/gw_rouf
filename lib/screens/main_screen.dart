@@ -150,8 +150,8 @@ class _MainScreenState extends State<MainScreen> {
               onTap: () {
                 FirebaseAuth.instance.signOut();
                 //_authentication.signOut();
-                Navigator.pop(context);
-                Navigator.pop(context);
+                // Navigator.pop(context);
+                // Navigator.pop(context);
                 print("Logout is clicked");
               },
               trailing: Icon(Icons.add),

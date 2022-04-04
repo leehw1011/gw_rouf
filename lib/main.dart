@@ -43,74 +43,82 @@ class MyApp extends StatelessWidget {
         fontFamily: 'rouf-font',
       ),
       //home: MyPage(),
-      home: LoginSignupScreen(),
-    );
-  }
-}
-
-class MyPage extends StatelessWidget {
-  const MyPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              Flexible(
-                child: Authentication(),
-              )
-
-              // Expanded(
-              //   flex: 2,
-              //   child: Image.asset('assets/images/logo-black.png', width: 150),
-              // ),
-              // Expanded(
-              //   flex: 8,
-              //   child: Authentication(),
-              // ),
-            ],
-          ),
-        ),
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return MainScreen();
+          }
+          return LoginSignupScreen();
+        },
       ),
     );
   }
 }
 
-// Widget logo() {
-//   return Image.asset('assets/images/logo.png', width: 150);
+// class MyPage extends StatelessWidget {
+//   const MyPage({Key? key}) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Container(
+//         child: Center(
+//           child: Column(
+//             children: <Widget>[
+//               Flexible(
+//                 child: Authentication(),
+//               )
+
+//               // Expanded(
+//               //   flex: 2,
+//               //   child: Image.asset('assets/images/logo-black.png', width: 150),
+//               // ),
+//               // Expanded(
+//               //   flex: 8,
+//               //   child: Authentication(),
+//               // ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
 // }
 
-class Authentication extends StatelessWidget {
-  const Authentication({Key? key}) : super(key: key);
+// // Widget logo() {
+// //   return Image.asset('assets/images/logo.png', width: 150);
+// // }
 
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return SignInScreen(
-            headerBuilder: (context, constraints, _) {
-              return Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Image.asset('assets/images/logo-black.png'),
-                  ));
-            },
-            providerConfigs: [EmailProviderConfiguration()],
-          );
-        }
-        // // firestore에서 프로필 정보 가져오기. 없으면 설정하도록
-        // if (checkHasData()) {
-        //   return ProfileSet();
-        // }
-        return MainScreen();
-      },
-    );
-  }
+// class Authentication extends StatelessWidget {
+//   const Authentication({Key? key}) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return StreamBuilder(
+//       stream: FirebaseAuth.instance.authStateChanges(),
+//       builder: (context, snapshot) {
+//         if (!snapshot.hasData) {
+//           return SignInScreen(
+//             headerBuilder: (context, constraints, _) {
+//               return Padding(
+//                   padding: const EdgeInsets.all(20),
+//                   child: AspectRatio(
+//                     aspectRatio: 1,
+//                     child: Image.asset('assets/images/logo-black.png'),
+//                   ));
+//             },
+//             providerConfigs: [EmailProviderConfiguration()],
+//           );
+//         }
+//         // // firestore에서 프로필 정보 가져오기. 없으면 설정하도록
+//         // if (checkHasData()) {
+//         //   return ProfileSet();
+//         // }
+//         return MainScreen();
+//       },
+//     );
+//   }
 
   // Future<bool> checkHasData() async {
   //   final f = FirebaseFirestore.instance
@@ -119,7 +127,7 @@ class Authentication extends StatelessWidget {
   //   var checking = await f.get(); //받아오는 방식이므로 await필요(아래거 실행늦게 하게 하려면)
   //   return checking.exists;
   // }
-}
+//}
 
 // class MyApp extends StatelessWidget {
 //   const MyApp({Key? key}) : super(key: key);
