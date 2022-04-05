@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
 
-import '../globals.dart' as globals;
+//import '../globals.dart' as globals;
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -14,23 +14,58 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final _authentication = FirebaseAuth.instance;
+
   User? loggedUser;
+  //DocumentSnapshot<Map<String, dynamic>>? userData;
+  String? userName;
 
   void initState() {
     super.initState();
     getCurrentUser();
   }
 
-  void getCurrentUser() {
+  void getCurrentUser() async {
     try {
-      final user = _authentication.currentUser;
+      User user = await _authentication.currentUser!;
+      // print("****************************");
+      // print("user 정보 가져오기 : ");
+      // print(user);
+      // final _userData = await FirebaseFirestore.instance
+      //     .collection('user')
+      //     .doc(user.uid)
+      //     .get();
+      // print("user data 가져오기");
+      // print(_userData);
+      // print("****************************");
       if (user != null) {
         loggedUser = user;
-        print(loggedUser!.email);
+        //userData = _userData;
+        //print(userData.get(['userName'])!);
+        //print(loggedUser!.userName);
+        //print(loggedUser!.email);
+        //userName = _userData.data()!['userName'];
+        // print(userName);
       }
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<String> getUserName() async {
+    User user = await _authentication.currentUser!;
+    final _userData =
+        await FirebaseFirestore.instance.collection('user').doc(user.uid).get();
+
+    return _userData.data()!['userName'];
+  }
+
+  Future<String> getUserEmail() async {
+    User user = await _authentication.currentUser!;
+    final _userData =
+        await FirebaseFirestore.instance.collection('user').doc(user.uid).get();
+
+    return await loggedUser!.email.toString();
+    //return _userData.data()!['Email'];
   }
 
   @override
@@ -75,38 +110,69 @@ class _MainScreenState extends State<MainScreen> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            // DrawerHeader(
-            //   child: Container(
-            //       child: Row(
-            //     children: [
-            //       CircleAvatar(
-            //         backgroundImage: AssetImage('assets/images/profile1.jpg'),
-
-            //       ),
-            //       Column(
-            //         children: [
-            //           Text('noweeh'),
-            //           Text('leehw1011@gmail.com'),
-            //         ],
-            //       )
-            //     ],
-            //   )),
-            //   decoration: BoxDecoration(
-            //       color: Colors.green[200],
-            //       borderRadius: BorderRadius.only(
-            //         bottomLeft: Radius.circular(20.0),
-            //         bottomRight: Radius.circular(20.0),
-            //       )),
-            // ),
-            UserAccountsDrawerHeader(
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage('assets/images/profile1.jpg'),
-              ),
-              accountName: Text('noweeh'),
-              accountEmail: Text('leehw1011@gmail.com'),
-              onDetailsPressed: () {
-                print('arrow is clicked');
-              },
+            DrawerHeader(
+              child: Container(
+                  child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage('assets/images/profile1.jpg'),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 8,
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(10, 25, 0, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          FutureBuilder(
+                              future: getUserName(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot snapshot) {
+                                if (snapshot.hasData == false) {
+                                  return CircularProgressIndicator();
+                                } else if (snapshot.hasError) {
+                                  return Text(
+                                    'Error: ${snapshot.error}',
+                                  );
+                                } else {
+                                  return Text(
+                                    snapshot.data.toString(),
+                                    style: TextStyle(
+                                      //color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ); //Text(snapshot.data.toString());
+                                }
+                              }),
+                          FutureBuilder(
+                              future: getUserEmail(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot snapshot) {
+                                if (snapshot.hasData == false) {
+                                  return CircularProgressIndicator();
+                                } else if (snapshot.hasError) {
+                                  return Text(
+                                    'Error: ${snapshot.error}',
+                                  );
+                                } else {
+                                  return Text(snapshot.data.toString(),
+                                      style: TextStyle(
+                                          //color: Colors.white,
+                                          ));
+                                }
+                              }),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              )),
               decoration: BoxDecoration(
                   color: Colors.green[200],
                   borderRadius: BorderRadius.only(
@@ -114,18 +180,29 @@ class _MainScreenState extends State<MainScreen> {
                     bottomRight: Radius.circular(20.0),
                   )),
             ),
+            // UserAccountsDrawerHeader(
+            //   currentAccountPicture: CircleAvatar(
+            //     backgroundImage: AssetImage('assets/images/profile1.jpg'),
+            //   ),
+            //   accountName: Text('noweeh'),
+            //   accountEmail: Text('leehw1011@gmail.com'),
+            //   onDetailsPressed: () {
+            //     print('arrow is clicked');
+            //   },
+            //   decoration: BoxDecoration(
+            //       color: Colors.green[200],
+            //       borderRadius: BorderRadius.only(
+            //         bottomLeft: Radius.circular(20.0),
+            //         bottomRight: Radius.circular(20.0),
+            //       )),
+            // ),
             ListTile(
               leading: Icon(
                 Icons.favorite,
                 color: Colors.grey[850],
               ),
               title: Text('친구'),
-              onTap: () async {
-                final f = FirebaseFirestore.instance;
-                await f
-                    .collection('PROFILE')
-                    .doc(globals.currentUser?.uid)
-                    .set({'username': 'abcd'});
+              onTap: () {
                 print("친구 is clicked");
               },
               trailing: Icon(Icons.add),
