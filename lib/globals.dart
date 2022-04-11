@@ -6,3 +6,5 @@ import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
 
 var currentUser = FirebaseAuth.instance.currentUser;
+String friendId = '';
+String friendName = '';

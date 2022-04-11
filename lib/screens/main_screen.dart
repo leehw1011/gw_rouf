@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
+import 'package:gw/screens/friend_request.dart';
 
 //import '../globals.dart' as globals;
 
@@ -60,6 +61,9 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<String> getUserEmail() async {
+    // 여력이 된다면 이거 해결하기..
+    // 불러오는 코드 필요 없는데 빼면 실행 순서 꼬여서 오류남 ㅜㅜ
+
     User user = await _authentication.currentUser!;
     final _userData =
         await FirebaseFirestore.instance.collection('user').doc(user.uid).get();
@@ -71,7 +75,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(50.0), // AppBar 사이즈 지정
         child: AppBar(
@@ -204,6 +208,9 @@ class _MainScreenState extends State<MainScreen> {
               title: Text('친구'),
               onTap: () {
                 print("친구 is clicked");
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return FriendRequest();
+                }));
               },
               trailing: Icon(Icons.add),
             ),
