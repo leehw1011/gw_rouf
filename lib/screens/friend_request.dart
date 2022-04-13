@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gw/screens/printSearchedFriend.dart';
 import 'package:gw/globals.dart' as globals;
@@ -62,15 +63,15 @@ class _FriendRequestState extends State<FriendRequest> {
                     // Getting data directly
                     //String name = doc.get('userName');
                     globals.friendName = doc.get('userName');
+                    globals.friendUid = doc.get('userUID');
                     if (globals.friendName == '') print(globals.friendName);
                     print('found ' + globals.friendName);
-                    print(globals.friendId);
                     // // Getting data from map
                     // Map<String, dynamic> data = doc.data();
                     // int age = data['age'];
                   }
                   if (globals.friendName == '') print(globals.friendName);
-                  if (globals.friendName == '') ; // 신청받은 내용 출력 _ 그대로 그 페이지에 있기?
+                  //if (globals.friendName == '') ; // 신청받은 내용 출력 _ 그대로 그 페이지에 있기?
                   if (globals.friendName != '') {
                     // 검색 내용 출력
                     Navigator.push(
@@ -87,88 +88,83 @@ class _FriendRequestState extends State<FriendRequest> {
                     Icons.search,
                     color: Palette.iconColor,
                   ),
-                  // enabledBorder: OutlineInputBorder(
-                  //   borderSide:
-                  //       BorderSide(color: Palette.textColor1),
-                  //   borderRadius: BorderRadius.all(
-                  //     Radius.circular(35.0),
-                  //   ),
-                  // ),
-                  // focusedBorder: OutlineInputBorder(
-                  //   borderSide:
-                  //       BorderSide(color: Palette.textColor1),
-                  //   borderRadius: BorderRadius.all(
-                  //     Radius.circular(35.0),
-                  //   ),
-                  // ),
                   hintText: '친구 이메일 검색',
                   hintStyle: TextStyle(fontSize: 14, color: Palette.textColor1),
                   contentPadding: EdgeInsets.all(10),
                 ),
               ),
-
               SizedBox(
-                height: 8,
+                height: 20,
               ),
-              // 친구 검색 결과 or 받은 신청 목록
-              // if (globals.friendName == '')
-              //   Container(
-              //       child: Column(
-              //     children: [
-              //       SizedBox(
-              //         height: 50,
-              //       ),
-              //       ListTile(
-              //         title: Text("친구 검색 전"),
-              //       )
-              //     ],
-              //   )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text("받은 신청",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      )),
+                ],
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('user/${globals.currentUid}/requests')
+                    .snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                        snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  final docs = snapshot.data!.docs;
 
-              // if (globals.friendName != '')
-              //   ListTile(
-              //     leading: Icon(
-              //       Icons.circle,
-              //       color: Colors.grey[850],
-              //     ),
-              //     // 친구 이메일
-              //     title: Text("친구 검색 후" + globals.friendName),
-              //     // onTap: () {
-              //     //   print("친구 is clicked");
-              //     //   Navigator.push(context, MaterialPageRoute(builder: (context) {
-              //     //     return FriendRequest();
-              //     //   }));
-              //     // },
-              //     // '수락' 버튼으로 바꾸기
-              //     trailing: IconButton(
-              //         onPressed: () {
-              //           print("친구 추가");
-              //           // 목록에서 해당 data 사라지게
-              //         },
-              //         icon: Icon(Icons.add)),
-              //   ),
+                  return ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: docs.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                          //padding:,
+                          child: ListTile(
+                        // 친구 프로필사진
+                        leading: Icon(
+                          Icons.circle,
+                          color: Colors.grey[850],
+                        ),
+                        // 친구 이름
 
-              ListTile(
-                // 친구 프로필사진
-                leading: Icon(
-                  Icons.circle,
-                  color: Colors.grey[850],
-                ),
-                // 친구 이메일
-                title: Text("받은 신청 목록이 뜹니다"),
-                // onTap: () {
-                //   print("친구 is clicked");
-                //   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                //     return FriendRequest();
-                //   }));
-                // },
-                // '수락' 버튼으로 바꾸기
-                trailing: IconButton(
-                    onPressed: () {
-                      print("친구 추가");
-                      // 목록에서 해당 data 사라지게
+                        title: Text(docs[index]['name']),
+                        // '수락' 버튼으로 바꾸기
+                        trailing: IconButton(
+                            onPressed: () async {
+                              print("친구 추가");
+                              // 목록에서 해당 data 사라지게
+
+                              User user =
+                                  await FirebaseAuth.instance.currentUser!;
+                              final _userData = await FirebaseFirestore.instance
+                                  .collection('user')
+                                  .doc(docs[index]['request'])
+                                  .get();
+
+                              if (_userData.data() == null) {
+                                Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                              print(_userData.data()!['userName']);
+                            },
+                            icon: Icon(Icons.add)),
+                      ));
                     },
-                    icon: Icon(Icons.add)),
-              ),
+                  );
+                },
+              )
             ],
           )),
     );

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
 import 'package:gw/screens/friend_request.dart';
+import 'package:gw/globals.dart' as globals;
 
 //import '../globals.dart' as globals;
 
@@ -57,8 +58,29 @@ class _MainScreenState extends State<MainScreen> {
     final _userData =
         await FirebaseFirestore.instance.collection('user').doc(user.uid).get();
 
+    if (_userData.data() == null) {
+      Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    globals.currentUsername = _userData.data()!['userName'];
+    globals.currentUid = _userData.data()!['userUID'];
     return _userData.data()!['userName'];
   }
+  // Future getUserName() async {
+  //   User user = await _authentication.currentUser!;
+  //   final _userData =
+  //       await FirebaseFirestore.instance.collection('user').doc(user.uid).get();
+
+  //   if (_userData.data() == null) {
+  //     return Center(
+  //       child: CircularProgressIndicator(),
+  //     );
+  //     globals.currentUsername = _userData.data()!['userName'];
+  //     globals.currentUid = _userData.data()!['userUID'];
+  //     return _userData.data()!['userName'];
+  //   }
 
   Future<String> getUserEmail() async {
     // 여력이 된다면 이거 해결하기..
