@@ -139,27 +139,59 @@ class _FriendRequestState extends State<FriendRequest> {
                         // 친구 이름
 
                         title: Text(docs[index]['name']),
-                        // '수락' 버튼으로 바꾸기
-                        trailing: IconButton(
-                            onPressed: () async {
-                              print("친구 추가");
-                              // 목록에서 해당 data 사라지게
 
-                              User user =
-                                  await FirebaseAuth.instance.currentUser!;
-                              final _userData = await FirebaseFirestore.instance
-                                  .collection('user')
-                                  .doc(docs[index]['request'])
-                                  .get();
+                        trailing: TextButton(
+                          style: ButtonStyle(),
+                          child: Text("수락"),
+                          onPressed: () async {
+                            User user =
+                                await FirebaseAuth.instance.currentUser!;
+                            final _userData = await FirebaseFirestore.instance
+                                .collection('user')
+                                .doc(docs[index]['uid'])
+                                .get();
 
-                              if (_userData.data() == null) {
-                                Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-                              print(_userData.data()!['userName']);
-                            },
-                            icon: Icon(Icons.add)),
+                            if (_userData.data() == null) {
+                              Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+
+                            FirebaseFirestore.instance
+                                .collection(
+                                    'user/${globals.currentUid}/friends')
+                                .add({
+                              'uid': _userData.data()!['userUID'],
+                              'name': _userData.data()!['userName'],
+                            });
+
+                            firestore
+                                .collection(
+                                    'user/${globals.currentUid}/requests')
+                                .doc(docs[index].id)
+                                .delete();
+                          },
+                        ),
+                        // trailing: IconButton(
+                        //     onPressed: () async {
+                        //       print("친구 추가");
+                        //       // 목록에서 해당 data 사라지게
+
+                        //       User user =
+                        //           await FirebaseAuth.instance.currentUser!;
+                        //       final _userData = await FirebaseFirestore.instance
+                        //           .collection('user')
+                        //           .doc(docs[index]['uid'])
+                        //           .get();
+
+                        //       if (_userData.data() == null) {
+                        //         Center(
+                        //           child: CircularProgressIndicator(),
+                        //         );
+                        //       }
+                        //       print(_userData.data()!['userName']);
+                        //     },
+                        //     icon: Icon(Icons.add)),
                       ));
                     },
                   );

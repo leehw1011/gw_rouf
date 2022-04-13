@@ -58,7 +58,7 @@ class _MainScreenState extends State<MainScreen> {
     final _userData =
         await FirebaseFirestore.instance.collection('user').doc(user.uid).get();
 
-    if (_userData.data() == null) {
+    while (_userData.data() == null) {
       Center(
         child: CircularProgressIndicator(),
       );

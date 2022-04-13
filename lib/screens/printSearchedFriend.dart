@@ -64,7 +64,7 @@ class _printSearchedFriendState extends State<printSearchedFriend> {
                       FirebaseFirestore.instance
                           .collection('user/${globals.friendUid}/requests')
                           .add({
-                        'request': globals.currentUid,
+                        'uid': globals.currentUid,
                         'name': globals.currentUsername,
                       });
 
