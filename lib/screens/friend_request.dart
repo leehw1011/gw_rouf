@@ -141,7 +141,7 @@ class _FriendRequestState extends State<FriendRequest> {
                         title: Text(docs[index]['name']),
 
                         trailing: TextButton(
-                          style: ButtonStyle(),
+                          //style: ButtonStyle(),
                           child: Text("수락"),
                           onPressed: () async {
                             User user =
@@ -165,6 +165,14 @@ class _FriendRequestState extends State<FriendRequest> {
                               'name': _userData.data()!['userName'],
                             });
 
+                            FirebaseFirestore.instance
+                                .collection(
+                                    'user/${_userData.data()!['userUID']}/friends')
+                                .add({
+                              'uid': globals.currentUid,
+                              'name': globals.currentUsername,
+                            });
+
                             firestore
                                 .collection(
                                     'user/${globals.currentUid}/requests')
@@ -172,26 +180,6 @@ class _FriendRequestState extends State<FriendRequest> {
                                 .delete();
                           },
                         ),
-                        // trailing: IconButton(
-                        //     onPressed: () async {
-                        //       print("친구 추가");
-                        //       // 목록에서 해당 data 사라지게
-
-                        //       User user =
-                        //           await FirebaseAuth.instance.currentUser!;
-                        //       final _userData = await FirebaseFirestore.instance
-                        //           .collection('user')
-                        //           .doc(docs[index]['uid'])
-                        //           .get();
-
-                        //       if (_userData.data() == null) {
-                        //         Center(
-                        //           child: CircularProgressIndicator(),
-                        //         );
-                        //       }
-                        //       print(_userData.data()!['userName']);
-                        //     },
-                        //     icon: Icon(Icons.add)),
                       ));
                     },
                   );

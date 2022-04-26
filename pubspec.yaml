@@ -40,6 +40,7 @@ dependencies:
   provider: ^6.0.2
   flutterfire_ui: ^0.3.6+1
   modal_progress_hud_nsn: ^0.1.0-nullsafety-0
+  flutter_neat_and_clean_calendar: ^0.3.4+17
   
 dev_dependencies:
   flutter_test:
@@ -72,6 +73,14 @@ flutter:
     - assets/images/profile1.jpg
     - assets/images/profile2.jpg
     - assets/images/logo-black-2.png
+    - assets/images/login_logo.jpg
+    - assets/images/TaskIcon/공부.png
+    - assets/images/TaskIcon/운동.png
+    - assets/images/TaskIcon/놀기.png
+    - assets/images/TaskIcon/잠자기.png
+    - assets/images/TaskIcon/이동.png
+    - assets/images/TaskIcon/일하기.png
+    
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

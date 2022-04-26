@@ -53,47 +53,47 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                   height: 300,
                   decoration: BoxDecoration(
                       image: DecorationImage(
-                          image: AssetImage('assets/images/logo-black-2.png'),
+                          image: AssetImage('assets/images/login_logo.jpg'),
                           fit: BoxFit.fill)),
                   child: Container(
                     padding: EdgeInsets.only(top: 90, left: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        RichText(
-                          text: TextSpan(
-                            text: 'welcome',
-                            style: TextStyle(
-                                letterSpacing: 1.0,
-                                fontSize: 25,
-                                color: Colors.white),
-                            children: [
-                              TextSpan(
-                                text: isSignupScreen
-                                    ? ' to Yummy chat!'
-                                    : ' back',
-                                style: TextStyle(
-                                  letterSpacing: 1.0,
-                                  fontSize: 25,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5.0,
-                        ),
-                        Text(
-                          isSignupScreen
-                              ? 'Signup to continue'
-                              : 'Signin to continue',
-                          style: TextStyle(
-                            letterSpacing: 1.0,
-                            color: Colors.white,
-                          ),
-                        )
+                        // RichText(
+                        //   text: TextSpan(
+                        //     text: 'welcome',
+                        //     style: TextStyle(
+                        //         letterSpacing: 1.0,
+                        //         fontSize: 25,
+                        //         color: Colors.white),
+                        //     children: [
+                        //       TextSpan(
+                        //         text: isSignupScreen
+                        //             ? ' to Yummy chat!'
+                        //             : ' back',
+                        //         style: TextStyle(
+                        //           letterSpacing: 1.0,
+                        //           fontSize: 25,
+                        //           color: Colors.white,
+                        //           fontWeight: FontWeight.bold,
+                        //         ),
+                        //       )
+                        //     ],
+                        //   ),
+                        // ),
+                        // SizedBox(
+                        //   height: 5.0,
+                        // ),
+                        // Text(
+                        //   isSignupScreen
+                        //       ? 'Signup to continue'
+                        //       : 'Signin to continue',
+                        //   style: TextStyle(
+                        //     letterSpacing: 1.0,
+                        //     color: Colors.white,
+                        //   ),
+                        // )
                       ],
                     ),
                   ),
@@ -511,9 +511,9 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                 });
                               }
                             } catch (e) {
-                              setState(() {
-                                showSpinner = false;
-                              });
+                              // setState(() {
+                              //   showSpinner = false;
+                              // });
                               print(e);
                             }
                           }
