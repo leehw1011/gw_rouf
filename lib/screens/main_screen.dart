@@ -1,14 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gw/component/add_task.dart';
 //import 'package:flutterfire_ui/auth.dart';
 import 'package:gw/screens/friend_request.dart';
+//import 'package:intl/intl.dart';
 import 'package:gw/globals.dart' as globals;
 
 import 'calendar_screen.dart';
+import 'package:gw/component/add_task.dart';
 //import 'package:flutter_neat_and_clean_calendar/flutter_neat_and_clean_calendar.dart';
-
-//import '../globals.dart' as globals;
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -54,6 +55,7 @@ class _MainScreenState extends State<MainScreen> {
 
     globals.currentUsername = _userData.data()!['userName'];
     globals.currentUid = _userData.data()!['userUID'];
+    //globals.statusKey = 8;
     return _userData.data()!['userName'];
   }
 
@@ -218,6 +220,7 @@ class _MainScreenState extends State<MainScreen> {
                 title: Text('로그아웃'),
                 onTap: () {
                   FirebaseAuth.instance.signOut();
+                  globals.statusKey = 8;
                   print("Logout is clicked");
                 },
               ),
@@ -304,38 +307,61 @@ void addCategory(context) {
         //content: new Text("Alert Dialog body"),
         content: Container(
             child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
                 child: Row(children: [
               for (int i = 0; i < 4; i++)
-                Column(
-                  children: [
-                    IconButton(
-                      icon: Image.asset(
-                          'assets/images/TaskIcon/${globals.tasks[i]}.png'),
-                      iconSize: 20,
-                      onPressed: () {},
-                    ),
-                    Text(
-                      globals.tasks[i], //"공부",
-                      style: TextStyle(fontSize: 12),
-                    ),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Column(
+                    children: [
+                      IconButton(
+                        icon: Image.asset(
+                            'assets/images/TaskIcon/${globals.tasks[i]}.png'),
+                        iconSize: 20,
+                        onPressed: () {
+                          globals.statusKey = i;
+                          print(globals.statusKey);
+                          //new AddTask();
+                        },
+                      ),
+                      Text(
+                        globals.tasks[i],
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
                 ),
             ])),
             Row(
-              children: [],
+              children: [
+                for (int i = 4; i < 8; i++)
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Column(
+                      children: [
+                        IconButton(
+                          icon: Image.asset(
+                              'assets/images/TaskIcon/${globals.tasks[i]}.png'),
+                          iconSize: 20,
+                          onPressed: () {
+                            globals.statusKey = i;
+                            print(globals.statusKey);
+                            //new AddTask();
+                          },
+                        ),
+                        Text(
+                          globals.tasks[i],
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
             )
           ],
         )),
-        actions: <Widget>[
-          new FlatButton(
-            child: new Text("Close"),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
       );
     },
   );

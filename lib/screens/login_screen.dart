@@ -34,6 +34,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // print(globals.statusKey);
     return Scaffold(
       backgroundColor: Palette.backgroundColor,
       body: ModalProgressHUD(
@@ -469,6 +470,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) {
+                                    globals.statusKey = 8;
                                     return MainScreen();
                                   }),
                                 );
@@ -492,6 +494,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                           if (!isSignupScreen) {
                             _tryValidation();
                             try {
+                              //print(globals.statusKey);
+                              globals.statusKey = 8;
                               final newUser = await _authentication
                                   .signInWithEmailAndPassword(
                                 email: userEmail,
